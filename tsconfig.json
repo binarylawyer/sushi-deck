@@ -14,6 +14,7 @@
     "baseUrl": ".",
     "paths": {
       "@binarylawyer/deck-kit": ["./src/index.ts"],
+      "@binarylawyer/deck-kit/json": ["./src/json/index.ts"],
       "@binarylawyer/deck-kit/gate": ["./src/gate/index.ts"]
     },
     "types": ["react", "react-dom", "node"]

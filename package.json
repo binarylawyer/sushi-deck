@@ -1,6 +1,6 @@
 {
   "name": "@binarylawyer/deck-kit",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Portable presentation/slide-deck kit — typed React slides on a scaled artboard with present, overview, presenter, scroll, and PDF modes. Auth-agnostic and themeable.",
   "license": "UNLICENSED",
   "private": false,
@@ -18,6 +18,10 @@
       "default": "./src/index.ts"
     },
     "./styles.css": "./src/deck.css",
+    "./json": {
+      "types": "./src/json/index.ts",
+      "default": "./src/json/index.ts"
+    },
     "./gate": {
       "types": "./src/gate/index.ts",
       "default": "./src/gate/index.ts"

@@ -155,6 +155,50 @@ Moye Law OS does exactly this and renders the same `DeckRuntime`.
 
 ---
 
+## Data-driven decks (editable by non-devs)
+
+Decks can also be pure **data** — `@binarylawyer/deck-kit/json`. A `DeckJson`
+describes every slide as blocks-as-data (no React), so an admin UI can
+read/write it and let non-developers add / remove / reorder slides. Render it by
+converting to a runtime deck:
+
+```tsx
+"use client";
+import { DeckRuntime } from "@binarylawyer/deck-kit";
+import { deckFromJson } from "@binarylawyer/deck-kit/json";
+import "@binarylawyer/deck-kit/styles.css";
+import { q3Json } from "@/decks/q3.json"; // your stored JSON
+
+export default () => <DeckRuntime deck={deckFromJson(q3Json)} theme={q3Json.theme} />;
+```
+
+```jsonc
+// the format (abridged) — see examples/json-deck.ts
+{ "v": 1, "title": "Q3 Update", "theme": { "navy": "#0A2342" },
+  "slides": [
+    { "id": "cover", "kind": "cover", "label": "Cover",
+      "eyebrow": "Confidential", "title": "Momentum, in *numbers*." },
+    { "id": "n", "kind": "slide", "label": "Numbers", "mark": { "label": "Acme" },
+      "blocks": [
+        { "block": "opener", "eyebrow": "The quarter", "headline": "Growth *held*" },
+        { "block": "statband", "stats": [ { "value": "38%", "label": "Growth" } ] }
+      ] }
+  ] }
+```
+
+Inline `*emphasis*` → italic-accent. Slide indices auto-generate. **Edit
+operations** (pure, immutable) power an editor UI:
+
+```ts
+import { addSlide, removeSlide, moveSlide, addBlock, moveBlock, validateDeckJson } from "@binarylawyer/deck-kit/json";
+const next = moveSlide(deck, "ask", 1);           // reorder
+const withStat = addBlock(deck, "numbers", { block: "statband", stats: [] });
+const { ok, errors } = validateDeckJson(incoming); // guard untrusted JSON
+```
+
+The kit provides the **format + renderer + operations**; the editor UI lives in
+your app (it calls these ops and persists the JSON).
+
 ## API
 
 | Export | What |
@@ -166,6 +210,7 @@ Moye Law OS does exactly this and renders the same `DeckRuntime`.
 | `ScaledPage` | Low-level artboard scaler. |
 | `themeVars`, `DeckTheme` | Theme → CSS-var helper + type. |
 | `Deck`, `SlideDef`, `DeckComponents` | Types. |
+| `@binarylawyer/deck-kit/json` | Data-driven format: `DeckJson`, `deckFromJson`, edit ops (`addSlide`/`moveSlide`/`addBlock`/…), `validateDeckJson`. |
 | `@binarylawyer/deck-kit/gate` | Optional password gate (server helpers + `PasswordGate`). |
 
 Artboard defaults to **1100×850** (Letter landscape); override per deck with
@@ -176,5 +221,7 @@ Artboard defaults to **1100×850** (Letter landscape); override per deck with
 - v0.2 — ✅ authoring blocks (stat / chart / table / callout / quote / two-col)
   + styleguide example. Still to come: a compiled `dist` build for non-Next
   consumers.
-- v0.3 — a data-driven deck format (JSON) enabling non-dev, in-admin slide
-  add/remove/reorder across apps.
+- v0.3 — ✅ data-driven JSON deck format + renderer + edit operations
+  (`@binarylawyer/deck-kit/json`). The in-admin editor UI is built per app on
+  top of these ops.
+- next — a compiled `dist` build for non-Next consumers; a reference editor UI.
