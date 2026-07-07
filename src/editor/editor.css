@@ -1,0 +1,81 @@
+/* ============================================================
+   @binarylawyer/sushi-deck/editor — editor chrome.
+   Neutral app-UI styling (the editor is a tool, not a brand
+   surface). The preview pane inside renders the themed .dk deck.
+   Scoped under `.dke`.
+   ============================================================ */
+
+.dke {
+    --dke-bg: #0f1420;
+    --dke-panel: #161c28;
+    --dke-line: #2a3444;
+    --dke-text: #e6ebf2;
+    --dke-muted: #8b97a8;
+    --dke-accent: #C99D56;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 600px;
+    background: var(--dke-bg);
+    color: var(--dke-text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+}
+
+.dke-top { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid var(--dke-line); }
+.dke-title { font-size: 15px; font-weight: 600; }
+.dke-save { background: var(--dke-accent); color: #0f1420; border: 0; padding: 8px 18px; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; cursor: pointer; }
+.dke-save:disabled { opacity: 0.6; cursor: default; }
+
+.dke-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 220px 1fr 320px; }
+
+/* Slides rail */
+.dke-rail { border-right: 1px solid var(--dke-line); display: flex; flex-direction: column; min-height: 0; }
+.dke-rail__add { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--dke-line); }
+.dke-rail__add button { flex: 1; background: var(--dke-panel); color: var(--dke-text); border: 1px solid var(--dke-line); padding: 8px; cursor: pointer; font-size: 12px; }
+.dke-rail__add button:hover { border-color: var(--dke-accent); }
+.dke-slides { list-style: none; margin: 0; padding: 8px; overflow: auto; display: grid; gap: 6px; }
+.dke-slide { display: flex; align-items: center; gap: 6px; padding: 6px; border: 1px solid transparent; border-radius: 2px; }
+.dke-slide.is-sel { border-color: var(--dke-accent); background: var(--dke-panel); }
+.dke-slide__pick { flex: 1; display: flex; align-items: center; gap: 10px; background: none; border: 0; color: var(--dke-text); cursor: pointer; text-align: left; padding: 2px; }
+.dke-slide__n { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--dke-muted); }
+.dke-slide__label { font-size: 13px; }
+.dke-slide__acts { display: flex; gap: 2px; opacity: 0.5; }
+.dke-slide:hover .dke-slide__acts, .dke-slide.is-sel .dke-slide__acts { opacity: 1; }
+.dke-slide__acts button { background: none; border: 0; color: var(--dke-muted); cursor: pointer; font-size: 12px; padding: 2px 4px; }
+.dke-slide__acts button:hover:not(:disabled) { color: var(--dke-text); }
+.dke-slide__acts button:disabled { opacity: 0.3; cursor: default; }
+
+/* Preview */
+.dke-preview { min-height: 0; display: flex; background: #c5cad2; }
+.dke-preview .dk { flex: 1; display: flex; }
+.dke-preview__fit { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 12px; }
+
+/* Inspector */
+.dke-inspect { border-left: 1px solid var(--dke-line); overflow: auto; padding: 14px; }
+.dke-empty { color: var(--dke-muted); padding: 20px; }
+.dke-form { display: grid; gap: 12px; }
+.dke-field { display: grid; gap: 4px; }
+.dke-field__label { font-size: 11px; color: var(--dke-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.dke-field__label em { text-transform: none; letter-spacing: 0; color: var(--dke-accent); font-style: normal; }
+.dke-field__input { background: var(--dke-bg); color: var(--dke-text); border: 1px solid var(--dke-line); padding: 7px 9px; font: inherit; font-size: 13px; border-radius: 2px; resize: vertical; }
+.dke-field__input:focus { outline: none; border-color: var(--dke-accent); }
+.dke-field__mono { font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+.dke-field__err { color: #e88; font-size: 11px; }
+
+.dke-blocks { display: grid; gap: 10px; }
+.dke-block { border: 1px solid var(--dke-line); border-radius: 2px; padding: 10px; display: grid; gap: 8px; }
+.dke-block__head { display: flex; align-items: center; justify-content: space-between; }
+.dke-block__type { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--dke-accent); text-transform: uppercase; letter-spacing: 0.08em; }
+.dke-block__acts button { background: none; border: 0; color: var(--dke-muted); cursor: pointer; padding: 2px 4px; }
+.dke-block__acts button:hover:not(:disabled) { color: var(--dke-text); }
+.dke-block__acts button:disabled { opacity: 0.3; cursor: default; }
+
+.dke-addblock { display: flex; gap: 8px; margin-top: 4px; }
+.dke-addblock select { flex: 1; background: var(--dke-bg); color: var(--dke-text); border: 1px solid var(--dke-line); padding: 7px; border-radius: 2px; }
+.dke-addblock button { background: var(--dke-panel); color: var(--dke-text); border: 1px solid var(--dke-line); padding: 7px 12px; cursor: pointer; }
+.dke-addblock button:hover { border-color: var(--dke-accent); }
+
+@media (max-width: 900px) {
+    .dke-body { grid-template-columns: 1fr; grid-template-rows: auto 340px auto; }
+}

@@ -216,29 +216,29 @@ your app (it calls these ops and persists the JSON).
 Artboard defaults to **1100×850** (Letter landscape); override per deck with
 `width` / `height`.
 
-## Server modules (storage · generation · API)
+## Editor (non-dev editing)
 
-For API-backed builders, the package ships three server-side modules. All are
-framework-agnostic and unit-tested; an app wires them to Supabase + an LLM.
+`@binarylawyer/sushi-deck/editor` is a portable three-pane editor (slides ·
+live preview · inspector) that lets non-developers build decks — drop it into
+any app's admin.
 
-```ts
-// store — pick an implementation of the DeckStore interface
-import { SupabaseDeckStore } from "@binarylawyer/sushi-deck/store";
-const store = new SupabaseDeckStore(supabaseServiceClient); // or InMemoryDeckStore for tests
+```tsx
+"use client";
+import { DeckEditor } from "@binarylawyer/sushi-deck/editor";
+import "@binarylawyer/sushi-deck/styles.css";
 
-// generate — brief → validated DeckJson (LLM injected, so it's testable)
-import { generateDeck, type LlmClient } from "@binarylawyer/sushi-deck/generate";
-const llm: LlmClient = { complete: (prompt) => callClaude(prompt) };
-
-// api — Fetch (Request) => Response handlers; mount in your routes
-import { createDeckHandlers } from "@binarylawyer/sushi-deck/api";
-const api = createDeckHandlers({ store, llm });
-// e.g. Next: export const GET = (req) => api.list(req);  export const POST = (req) => api.create(req);
+<DeckEditor
+  initialDeck={deckJson}
+  onChange={(deck) => setDirty(deck)}         // fires on every edit
+  onSave={(deck) => fetch(`/api/decks/${id}`, { method: "PUT", body: JSON.stringify({ deck }) })}
+  theme={deckJson.theme}
+/>
 ```
 
-CRUD + `generate`, with store errors mapped to HTTP (422 invalid · 409 conflict ·
-404 missing). The Supabase table lives in `supabase/migrations`. See
-`docs/ARCHITECTURE.md` for the full API surface + flows.
+Add / remove / reorder / duplicate slides; edit block fields; live preview
+renders the exact recipient output. The editing logic is a headless, unit-tested
+reducer (`editorReducer` / `model.ts`) built on the json edit-ops, so the UI is a
+thin shell — reuse the reducer to build a custom editor if you prefer.
 
 ## Testing (TDD)
 
