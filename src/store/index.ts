@@ -20,3 +20,4 @@ export {
 } from "./DeckStore";
 export { InMemoryDeckStore } from "./InMemoryDeckStore";
 export type { InMemoryDeckStoreOptions } from "./InMemoryDeckStore";
+export { SupabaseDeckStore } from "./SupabaseDeckStore";
