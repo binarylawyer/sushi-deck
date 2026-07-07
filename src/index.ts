@@ -14,6 +14,18 @@ export { ScrollView } from "./ScrollView";
 export type { ScrollViewProps } from "./ScrollView";
 export { ScaledPage } from "./ScaledPage";
 export { SlidePage, Opener, Cover, Mark } from "./primitives";
+export {
+    Kicker,
+    Plate,
+    Callout,
+    Stat,
+    StatBand,
+    TwoCol,
+    Quote,
+    Bullets,
+    DataTable,
+    BarChart,
+} from "./blocks";
 export { themeVars } from "./theme";
 export type { DeckTheme } from "./theme";
 export type { Deck, SlideDef, DeckComponents, LinkProps } from "./types";

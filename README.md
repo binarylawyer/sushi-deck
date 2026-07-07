@@ -161,7 +161,8 @@ Moye Law OS does exactly this and renders the same `DeckRuntime`.
 |---|---|
 | `DeckRuntime` | Present / overview / presenter / fullscreen runtime. Props: `deck`, `homeHref?`, `scrollHref?`, `components?`, `theme?`. |
 | `ScrollView` | Scrollable stacked view. Props: `deck`, `presentHref?`, `homeHref?`, `components?`, `theme?`. |
-| `SlidePage`, `Opener`, `Cover`, `Mark` | Authoring primitives. |
+| `SlidePage`, `Opener`, `Cover`, `Mark` | Slide primitives (frame + header). |
+| `Plate`, `Callout`, `Kicker`, `Stat`, `StatBand`, `TwoCol`, `Quote`, `Bullets`, `DataTable`, `BarChart` | Authoring blocks — the reusable content components. See `examples/styleguide-deck.tsx`. |
 | `ScaledPage` | Low-level artboard scaler. |
 | `themeVars`, `DeckTheme` | Theme → CSS-var helper + type. |
 | `Deck`, `SlideDef`, `DeckComponents` | Types. |
@@ -172,7 +173,8 @@ Artboard defaults to **1100×850** (Letter landscape); override per deck with
 
 ## Roadmap
 
-- v0.2 — richer authoring kit (chart / stat-tile / two-column blocks), a
-  `/styleguide` gallery, a compiled `dist` build for non-Next consumers.
+- v0.2 — ✅ authoring blocks (stat / chart / table / callout / quote / two-col)
+  + styleguide example. Still to come: a compiled `dist` build for non-Next
+  consumers.
 - v0.3 — a data-driven deck format (JSON) enabling non-dev, in-admin slide
   add/remove/reorder across apps.
