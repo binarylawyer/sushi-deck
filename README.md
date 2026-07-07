@@ -216,6 +216,30 @@ your app (it calls these ops and persists the JSON).
 Artboard defaults to **1100×850** (Letter landscape); override per deck with
 `width` / `height`.
 
+## Server modules (storage · generation · API)
+
+For API-backed builders, the package ships three server-side modules. All are
+framework-agnostic and unit-tested; an app wires them to Supabase + an LLM.
+
+```ts
+// store — pick an implementation of the DeckStore interface
+import { SupabaseDeckStore } from "@binarylawyer/sushi-deck/store";
+const store = new SupabaseDeckStore(supabaseServiceClient); // or InMemoryDeckStore for tests
+
+// generate — brief → validated DeckJson (LLM injected, so it's testable)
+import { generateDeck, type LlmClient } from "@binarylawyer/sushi-deck/generate";
+const llm: LlmClient = { complete: (prompt) => callClaude(prompt) };
+
+// api — Fetch (Request) => Response handlers; mount in your routes
+import { createDeckHandlers } from "@binarylawyer/sushi-deck/api";
+const api = createDeckHandlers({ store, llm });
+// e.g. Next: export const GET = (req) => api.list(req);  export const POST = (req) => api.create(req);
+```
+
+CRUD + `generate`, with store errors mapped to HTTP (422 invalid · 409 conflict ·
+404 missing). The Supabase table lives in `supabase/migrations`. See
+`docs/ARCHITECTURE.md` for the full API surface + flows.
+
 ## Testing (TDD)
 
 Developed test-first with **Vitest**. Tests live next to the code
