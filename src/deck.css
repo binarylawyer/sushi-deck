@@ -1,0 +1,142 @@
+/* ============================================================
+   @binarylawyer/deck-kit — slide runtime + artboard styles
+   ------------------------------------------------------------
+   Everything is scoped under `.dk` and driven by `--dk-*` tokens
+   with sensible defaults, so a deck renders identically wherever
+   it is mounted and reskins for any brand by overriding tokens
+   (see theme.ts / the `theme` prop). Zero radius, hard-offset
+   shadows. Default artboard 1100x850 (Letter landscape).
+   ============================================================ */
+
+.dk {
+    /* ---- Brand tokens (override via theme) ---- */
+    --dk-navy: #0A2342;
+    --dk-ink: #0B1A2E;
+    --dk-navy-deep: #081A33;
+    --dk-gold: #C99D56;
+    --dk-gold-deep: #A47E3B;
+    --dk-gold-soft: #E8D4A8;
+    --dk-paper: #FAF7F2;
+    --dk-parchment: #F1EADB;
+    --dk-wax: #6B1E1E;
+    --dk-slate: #4A5A6E;
+    --dk-line: rgba(11, 26, 46, 0.14);
+    --dk-line-strong: rgba(11, 26, 46, 0.30);
+    --dk-paper-on-navy: rgba(250, 247, 242, 0.82);
+    --dk-stage: #0a0f16;
+
+    /* Default type = system stacks (no external font dependency).
+       Override --dk-display etc. with your brand fonts. */
+    --dk-display: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --dk-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --dk-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    --dk-shadow-page: 0 1px 0 rgba(0, 0, 0, 0.04), 0 24px 60px rgba(11, 26, 46, 0.22);
+}
+
+/* ---- Stage (dark field behind the artboard) ---- */
+.dk-stage { background: var(--dk-stage); color: #fff; width: 100%; min-height: 100vh; }
+
+/* ---- The artboard ---- */
+.dk .dk-page {
+    width: 1100px;
+    height: 850px;
+    background: var(--dk-paper);
+    color: var(--dk-ink);
+    box-shadow: var(--dk-shadow-page);
+    transform-origin: top left;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--dk-sans);
+}
+.dk .dk-page * { box-sizing: border-box; }
+
+/* ---- Shared slide chrome ---- */
+.dk .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 30px 64px 0; flex-shrink: 0; }
+.dk .dk-mark { font-family: var(--dk-display); font-weight: 600; font-size: 21px; color: var(--dk-ink); display: flex; align-items: center; gap: 11px; letter-spacing: 0.01em; }
+.dk .dk-mark__glyph { width: 22px; height: 22px; background: var(--dk-navy); position: relative; }
+.dk .dk-mark__glyph::after { content: ""; position: absolute; right: 0; bottom: 0; width: 9px; height: 9px; background: var(--dk-gold); }
+.dk .dk-mark sup { font-family: var(--dk-mono); font-size: 9px; letter-spacing: 0.2em; color: var(--dk-wax); font-weight: 700; margin-left: 2px; vertical-align: 8px; }
+.dk .dk-idx { font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dk-slate); font-weight: 600; }
+.dk .dk-headrule { margin: 20px 64px 0; height: 1px; background: var(--dk-line-strong); flex-shrink: 0; }
+.dk .dk-body { padding: 34px 64px 0; flex: 1; min-height: 0; }
+.dk .dk-foot { padding: 16px 64px 22px; flex-shrink: 0; border-top: 1px solid var(--dk-line); margin-top: 18px; }
+.dk .dk-disclaimer { margin: 0; max-width: none; font-family: var(--dk-sans); font-size: 11px; line-height: 1.5; color: var(--dk-slate); }
+
+/* ---- Opener stack ---- */
+.dk .dk-opener .dk-eyebrow { font-family: var(--dk-mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dk-gold-deep); font-weight: 700; }
+.dk .dk-opener h2 { margin: 12px 0 12px; font-family: var(--dk-display); font-weight: 500; font-size: 44px; line-height: 1.06; letter-spacing: -0.015em; color: var(--dk-ink); }
+.dk .dk-opener h2 em { font-style: italic; color: var(--dk-gold-deep); }
+.dk .dk-opener .dk-lede { margin: 0; font-family: var(--dk-display); font-style: italic; font-size: 20px; line-height: 1.4; color: rgba(11, 26, 46, 0.66); max-width: 62ch; }
+
+/* ---- Cover variant (navy field) ---- */
+.dk .dk-page.dk-cover { background: var(--dk-navy-deep); color: var(--dk-paper); padding: 0; }
+.dk .dk-page.dk-cover::before { content: ""; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: var(--dk-gold); }
+.dk .dk-cover-inner { padding: 60px 84px; flex: 1; display: flex; flex-direction: column; }
+.dk .dk-cover-eyebrow { font-family: var(--dk-mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dk-gold-soft); font-weight: 700; }
+.dk .dk-cover-rule { width: 60px; height: 3px; background: var(--dk-gold); margin: 26px 0 30px; }
+.dk .dk-page.dk-cover h1 { color: var(--dk-paper); font-family: var(--dk-display); font-size: 88px; line-height: 0.98; margin: 0; font-weight: 500; letter-spacing: -0.02em; max-width: 15ch; }
+.dk .dk-page.dk-cover h1 em { color: var(--dk-gold-soft); font-style: italic; }
+.dk .dk-cover-sub { font-family: var(--dk-sans); font-weight: 300; font-size: 19px; color: var(--dk-paper-on-navy); margin: 26px 0 0; max-width: 60ch; line-height: 1.55; }
+.dk .dk-cover-foot { margin-top: auto; padding-top: 22px; border-top: 1px solid rgba(232, 212, 168, 0.24); display: flex; gap: 56px; }
+.dk .dk-cover-foot dt { font-family: var(--dk-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dk-gold-soft); font-weight: 700; margin-bottom: 6px; }
+.dk .dk-cover-foot dd { margin: 0; font-family: var(--dk-display); font-size: 17px; color: var(--dk-paper); font-weight: 500; }
+
+/* ---- Control bar ---- */
+.dk-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 32px; }
+.dk-bar__title { font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); text-decoration: none; transition: color 200ms; background: none; border: 0; cursor: pointer; }
+.dk-bar__title:hover { color: var(--dk-gold-soft); }
+.dk-bar__nav { display: flex; align-items: center; gap: 16px; }
+.dk-bar__count { font-family: var(--dk-mono); font-size: 14px; color: #fff; font-variant-numeric: tabular-nums; }
+.dk-bar__tools { display: flex; align-items: center; gap: 6px; }
+.dk-btn { appearance: none; background: transparent; border: 0; cursor: pointer; color: rgba(255, 255, 255, 0.72); padding: 6px; line-height: 0; display: inline-flex; align-items: center; justify-content: center; transition: background 200ms, color 200ms; text-decoration: none; }
+.dk-btn:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
+.dk-btn:disabled { opacity: 0.25; cursor: default; }
+.dk-btn[data-active="1"] { background: rgba(201, 157, 86, 0.22); color: var(--dk-gold-soft); }
+
+/* ---- Present mode ---- */
+.dk-present { display: flex; min-height: 100vh; width: 100%; flex-direction: column; }
+.dk-present__stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+/* ---- Overview grid ---- */
+.dk-overview { min-height: 100vh; width: 100%; overflow: auto; padding: 40px; }
+.dk-overview__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 32px; }
+.dk-overview__title { font-family: var(--dk-display); font-size: 26px; color: #fff; text-decoration: none; background: none; border: 0; cursor: pointer; }
+.dk-overview__hint { font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); }
+.dk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.dk-thumb { appearance: none; background: transparent; border: 0; text-align: left; cursor: pointer; }
+.dk-thumb__frame { overflow: hidden; outline: 1px solid rgba(255, 255, 255, 0.12); transition: outline-color 200ms; }
+.dk-thumb:hover .dk-thumb__frame { outline-color: var(--dk-gold); }
+.dk-thumb__label { margin-top: 8px; font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+
+/* ---- Presenter view ---- */
+.dk-presenter { display: grid; min-height: 100vh; width: 100%; grid-template-columns: 1.4fr 1fr; gap: 24px; padding: 24px; }
+.dk-presenter__main { display: flex; flex-direction: column; }
+.dk-presenter__cur { margin-bottom: 8px; font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); }
+.dk-presenter__stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.dk-notes { display: flex; flex-direction: column; gap: 20px; background: #0d1f38; padding: 24px; color: #fff; }
+.dk-notes__top { display: flex; align-items: baseline; justify-content: space-between; }
+.dk-notes__label { font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dk-gold-soft); }
+.dk-notes__timer { font-family: var(--dk-mono); font-size: 24px; color: #fff; font-variant-numeric: tabular-nums; }
+.dk-notes__body { font-family: var(--dk-sans); font-size: 15px; line-height: 1.65; color: rgba(255, 255, 255, 0.85); }
+.dk-notes__next { margin-top: auto; }
+.dk-notes__nextlabel { margin-bottom: 8px; font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); }
+.dk-notes__nextframe { overflow: hidden; outline: 1px solid rgba(255, 255, 255, 0.1); }
+.dk-notes__end { display: flex; height: 128px; align-items: center; justify-content: center; font-family: var(--dk-mono); font-size: 12px; color: rgba(255, 255, 255, 0.4); }
+
+/* ---- Scroll view ---- */
+.dk-scroll { display: flex; min-height: 100vh; width: 100%; flex-direction: column; align-items: center; gap: 30px; padding: 34px 0 60px; background: #c5cad2; }
+.dk-scroll__bar { display: flex; width: 100%; max-width: 1100px; align-items: center; justify-content: space-between; padding: 0 20px; }
+.dk-scroll__title { font-family: var(--dk-display); font-size: 22px; color: var(--dk-navy); text-decoration: none; }
+.dk-scroll__present { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1.5px solid var(--dk-navy); background: var(--dk-navy); color: var(--dk-paper); font-family: var(--dk-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; transition: background 200ms; }
+.dk-scroll__present:hover { background: var(--dk-navy-deep); }
+
+/* ---- Print -> PDF (one artboard per landscape page) ---- */
+@media print {
+    .dk-bar, .dk-scroll__bar, .dk-overview__head { display: none !important; }
+    .dk-stage, .dk-scroll { background: #fff !important; }
+    .dk .dk-page { box-shadow: none !important; page-break-after: always; break-after: page; transform: none !important; }
+    @page { size: 1100px 850px; margin: 0; }
+}
