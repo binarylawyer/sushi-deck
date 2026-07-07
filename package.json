@@ -1,6 +1,6 @@
 {
   "name": "@binarylawyer/sushi-deck",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Sushi Deck — a portable, API-driven presentation/slide-deck builder. Typed React slides on a scaled artboard (present/overview/presenter/scroll/PDF), a data-driven JSON format, and a testable storage + generation layer. Auth-agnostic and themeable.",
   "license": "UNLICENSED",
   "private": false,
@@ -26,6 +26,14 @@
       "types": "./src/store/index.ts",
       "default": "./src/store/index.ts"
     },
+    "./generate": {
+      "types": "./src/generate/index.ts",
+      "default": "./src/generate/index.ts"
+    },
+    "./api": {
+      "types": "./src/api/index.ts",
+      "default": "./src/api/index.ts"
+    },
     "./gate": {
       "types": "./src/gate/index.ts",
       "default": "./src/gate/index.ts"
@@ -33,9 +41,16 @@
   },
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "@supabase/supabase-js": ">=2"
+  },
+  "peerDependenciesMeta": {
+    "@supabase/supabase-js": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@supabase/supabase-js": "^2.45.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
