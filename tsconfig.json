@@ -13,9 +13,10 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@binarylawyer/deck-kit": ["./src/index.ts"],
-      "@binarylawyer/deck-kit/json": ["./src/json/index.ts"],
-      "@binarylawyer/deck-kit/gate": ["./src/gate/index.ts"]
+      "@binarylawyer/sushi-deck": ["./src/index.ts"],
+      "@binarylawyer/sushi-deck/json": ["./src/json/index.ts"],
+      "@binarylawyer/sushi-deck/store": ["./src/store/index.ts"],
+      "@binarylawyer/sushi-deck/gate": ["./src/gate/index.ts"]
     },
     "types": ["react", "react-dom", "node"]
   },

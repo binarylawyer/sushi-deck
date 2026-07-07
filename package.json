@@ -1,7 +1,7 @@
 {
-  "name": "@binarylawyer/deck-kit",
-  "version": "0.3.0",
-  "description": "Portable presentation/slide-deck kit — typed React slides on a scaled artboard with present, overview, presenter, scroll, and PDF modes. Auth-agnostic and themeable.",
+  "name": "@binarylawyer/sushi-deck",
+  "version": "0.4.0",
+  "description": "Sushi Deck — a portable, API-driven presentation/slide-deck builder. Typed React slides on a scaled artboard (present/overview/presenter/scroll/PDF), a data-driven JSON format, and a testable storage + generation layer. Auth-agnostic and themeable.",
   "license": "UNLICENSED",
   "private": false,
   "type": "module",
@@ -22,6 +22,10 @@
       "types": "./src/json/index.ts",
       "default": "./src/json/index.ts"
     },
+    "./store": {
+      "types": "./src/store/index.ts",
+      "default": "./src/store/index.ts"
+    },
     "./gate": {
       "types": "./src/gate/index.ts",
       "default": "./src/gate/index.ts"
@@ -37,10 +41,14 @@
     "@types/react-dom": "^19.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.9"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run test"
   },
   "keywords": [
     "presentation",
@@ -48,11 +56,12 @@
     "slide-deck",
     "react",
     "pitch-deck",
-    "pdf"
+    "pdf",
+    "deck-builder"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/binarylawyer/deck-kit.git"
+    "url": "git+https://github.com/binarylawyer/sushi-deck.git"
   },
   "publishConfig": {
     "access": "restricted"

@@ -75,7 +75,7 @@ export function verifyGateCookie(value: string | null | undefined, secret: strin
 
 function requireSecret(secret: string): void {
     if (!secret || secret.length < 32) {
-        throw new Error("deck-kit gate: secret is unset or too short (>= 32 chars). Generate one with `openssl rand -base64 48`.");
+        throw new Error("sushi-deck gate: secret is unset or too short (>= 32 chars). Generate one with `openssl rand -base64 48`.");
     }
 }
 
