@@ -216,6 +216,30 @@ your app (it calls these ops and persists the JSON).
 Artboard defaults to **1100×850** (Letter landscape); override per deck with
 `width` / `height`.
 
+## Editor (non-dev editing)
+
+`@binarylawyer/sushi-deck/editor` is a portable three-pane editor (slides ·
+live preview · inspector) that lets non-developers build decks — drop it into
+any app's admin.
+
+```tsx
+"use client";
+import { DeckEditor } from "@binarylawyer/sushi-deck/editor";
+import "@binarylawyer/sushi-deck/styles.css";
+
+<DeckEditor
+  initialDeck={deckJson}
+  onChange={(deck) => setDirty(deck)}         // fires on every edit
+  onSave={(deck) => fetch(`/api/decks/${id}`, { method: "PUT", body: JSON.stringify({ deck }) })}
+  theme={deckJson.theme}
+/>
+```
+
+Add / remove / reorder / duplicate slides; edit block fields; live preview
+renders the exact recipient output. The editing logic is a headless, unit-tested
+reducer (`editorReducer` / `model.ts`) built on the json edit-ops, so the UI is a
+thin shell — reuse the reducer to build a custom editor if you prefer.
+
 ## Testing (TDD)
 
 Developed test-first with **Vitest**. Tests live next to the code
