@@ -1,4 +1,4 @@
-# @binarylawyer/deck-kit
+# @binarylawyer/sushi-deck
 
 A portable presentation / slide-deck kit. Typed React slides on a fixed, scaled
 artboard, shown as a **deck** (present mode), a **scroll** page, or **printed to
@@ -16,8 +16,8 @@ from the "Meridian" deck platform).
 Private package — install from the repo (or your registry):
 
 ```bash
-npm i github:binarylawyer/deck-kit
-# or, once published:  npm i @binarylawyer/deck-kit
+npm i github:binarylawyer/sushi-deck
+# or, once published:  npm i @binarylawyer/sushi-deck
 ```
 
 **v1 ships TypeScript source** (no build step, so `"use client"` is always
@@ -25,7 +25,7 @@ correct). In a Next app, transpile it:
 
 ```js
 // next.config.js
-const nextConfig = { transpilePackages: ["@binarylawyer/deck-kit"] };
+const nextConfig = { transpilePackages: ["@binarylawyer/sushi-deck"] };
 export default nextConfig;
 ```
 
@@ -38,8 +38,8 @@ Peer deps: `react` / `react-dom` >= 18.
 **1 — Author a deck** (`decks/q3.tsx`): plain components from the primitives.
 
 ```tsx
-import type { Deck } from "@binarylawyer/deck-kit";
-import { Cover, SlidePage, Opener } from "@binarylawyer/deck-kit";
+import type { Deck } from "@binarylawyer/sushi-deck";
+import { Cover, SlidePage, Opener } from "@binarylawyer/sushi-deck";
 
 export const q3: Deck = {
   slug: "q3", title: "Q3 Update",
@@ -60,8 +60,8 @@ export const q3: Deck = {
 
 ```tsx
 "use client";
-import { DeckRuntime } from "@binarylawyer/deck-kit";
-import "@binarylawyer/deck-kit/styles.css";
+import { DeckRuntime } from "@binarylawyer/sushi-deck";
+import "@binarylawyer/sushi-deck/styles.css";
 import { q3 } from "@/decks/q3";
 import Link from "next/link"; // optional
 
@@ -74,8 +74,8 @@ Scroll view:
 
 ```tsx
 "use client";
-import { ScrollView } from "@binarylawyer/deck-kit";
-import "@binarylawyer/deck-kit/styles.css";
+import { ScrollView } from "@binarylawyer/sushi-deck";
+import "@binarylawyer/sushi-deck/styles.css";
 import { q3 } from "@/decks/q3";
 export default () => <ScrollView deck={q3} presentHref="/q3" />;
 ```
@@ -113,17 +113,17 @@ does). See `DeckTheme` in `src/theme.ts` for the full token list.
 ## Optional password gate
 
 The core has **no** auth. For the common "one password unlocks the deck" case,
-`@binarylawyer/deck-kit/gate` provides server crypto helpers + a client form.
+`@binarylawyer/sushi-deck/gate` provides server crypto helpers + a client form.
 
 ```ts
 // one-time: store the hash, not the password
-import { hashPassword } from "@binarylawyer/deck-kit/gate";
+import { hashPassword } from "@binarylawyer/sushi-deck/gate";
 console.log(hashPassword("your-deck-password")); // → put in DECK_PASSWORD_HASH
 ```
 
 ```ts
 // app/api/deck-gate/route.ts  (Node runtime)
-import { verifyPassword, signGateCookie, gateCookieName } from "@binarylawyer/deck-kit/gate";
+import { verifyPassword, signGateCookie, gateCookieName } from "@binarylawyer/sushi-deck/gate";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
 
 ```tsx
 // the deck page: gate first, then render
-import { verifyGateCookie, gateCookieName, PasswordGate } from "@binarylawyer/deck-kit/gate";
+import { verifyGateCookie, gateCookieName, PasswordGate } from "@binarylawyer/sushi-deck/gate";
 import { cookies } from "next/headers";
 
 export default async function Page() {
@@ -157,16 +157,16 @@ Moye Law OS does exactly this and renders the same `DeckRuntime`.
 
 ## Data-driven decks (editable by non-devs)
 
-Decks can also be pure **data** — `@binarylawyer/deck-kit/json`. A `DeckJson`
+Decks can also be pure **data** — `@binarylawyer/sushi-deck/json`. A `DeckJson`
 describes every slide as blocks-as-data (no React), so an admin UI can
 read/write it and let non-developers add / remove / reorder slides. Render it by
 converting to a runtime deck:
 
 ```tsx
 "use client";
-import { DeckRuntime } from "@binarylawyer/deck-kit";
-import { deckFromJson } from "@binarylawyer/deck-kit/json";
-import "@binarylawyer/deck-kit/styles.css";
+import { DeckRuntime } from "@binarylawyer/sushi-deck";
+import { deckFromJson } from "@binarylawyer/sushi-deck/json";
+import "@binarylawyer/sushi-deck/styles.css";
 import { q3Json } from "@/decks/q3.json"; // your stored JSON
 
 export default () => <DeckRuntime deck={deckFromJson(q3Json)} theme={q3Json.theme} />;
@@ -190,7 +190,7 @@ Inline `*emphasis*` → italic-accent. Slide indices auto-generate. **Edit
 operations** (pure, immutable) power an editor UI:
 
 ```ts
-import { addSlide, removeSlide, moveSlide, addBlock, moveBlock, validateDeckJson } from "@binarylawyer/deck-kit/json";
+import { addSlide, removeSlide, moveSlide, addBlock, moveBlock, validateDeckJson } from "@binarylawyer/sushi-deck/json";
 const next = moveSlide(deck, "ask", 1);           // reorder
 const withStat = addBlock(deck, "numbers", { block: "statband", stats: [] });
 const { ok, errors } = validateDeckJson(incoming); // guard untrusted JSON
@@ -210,18 +210,36 @@ your app (it calls these ops and persists the JSON).
 | `ScaledPage` | Low-level artboard scaler. |
 | `themeVars`, `DeckTheme` | Theme → CSS-var helper + type. |
 | `Deck`, `SlideDef`, `DeckComponents` | Types. |
-| `@binarylawyer/deck-kit/json` | Data-driven format: `DeckJson`, `deckFromJson`, edit ops (`addSlide`/`moveSlide`/`addBlock`/…), `validateDeckJson`. |
-| `@binarylawyer/deck-kit/gate` | Optional password gate (server helpers + `PasswordGate`). |
+| `@binarylawyer/sushi-deck/json` | Data-driven format: `DeckJson`, `deckFromJson`, edit ops (`addSlide`/`moveSlide`/`addBlock`/…), `validateDeckJson`. |
+| `@binarylawyer/sushi-deck/gate` | Optional password gate (server helpers + `PasswordGate`). |
 
 Artboard defaults to **1100×850** (Letter landscape); override per deck with
 `width` / `height`.
 
+## Testing (TDD)
+
+Developed test-first with **Vitest**. Tests live next to the code
+(`*.test.ts` / `*.test.tsx`) and run in Node (rendering assertions use
+`react-dom/server`, so no jsdom).
+
+```bash
+npm test          # run once
+npm run test:watch
+npm run check     # typecheck + test (what CI runs)
+```
+
+The storage layer is proven by a **reusable behavioral contract**
+(`src/store/contract.ts`): every `DeckStore` implementation runs the same
+`deckStoreContract(...)` suite, so the in-memory store and the production
+Supabase store behave identically. CI runs typecheck + tests on every PR.
+
 ## Roadmap
 
 - v0.2 — ✅ authoring blocks (stat / chart / table / callout / quote / two-col)
-  + styleguide example. Still to come: a compiled `dist` build for non-Next
-  consumers.
+  + styleguide example.
 - v0.3 — ✅ data-driven JSON deck format + renderer + edit operations
-  (`@binarylawyer/deck-kit/json`). The in-admin editor UI is built per app on
-  top of these ops.
-- next — a compiled `dist` build for non-Next consumers; a reference editor UI.
+  (`@binarylawyer/sushi-deck/json`).
+- v0.4 — ✅ TDD foundation (Vitest + CI) and the `DeckStore` storage contract +
+  in-memory implementation (`@binarylawyer/sushi-deck/store`).
+- next — Supabase `DeckStore` + a CRUD deck API + an AI generation endpoint
+  (see `docs/PRD.md` and `docs/ARCHITECTURE.md`); a reference editor UI.

@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/deck-kit/gate — optional shared-password gate.
+ * @binarylawyer/sushi-deck/gate — optional shared-password gate.
  *
  * Server helpers (Node runtime) + a client form. The kit's core is
  * auth-agnostic; use this only if you want the simple "one password unlocks
