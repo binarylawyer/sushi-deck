@@ -18,5 +18,16 @@ create table if not exists public.decks (
 create index if not exists decks_owner_updated_idx on public.decks (owner, updated_at desc);
 create index if not exists decks_updated_idx on public.decks (updated_at desc);
 
+-- Grant table privileges to service_role. A table created via raw SQL does NOT
+-- automatically get Supabase's role grants, so without this the service/secret
+-- key (which connects as service_role) hits "permission denied for table decks"
+-- [42501] on every query — even though it bypasses RLS. anon/authenticated are
+-- deliberately left WITHOUT grants: with RLS on and no policies, only the
+-- full-access secret key should ever touch decks (all access flows through the
+-- server-side store).
+grant select, insert, update, delete on table public.decks to service_role;
+
 -- RLS is left to the consuming app's auth model. The server-side store uses the
--- service role; enable RLS + per-tenant policies when a client-facing path exists.
+-- service role (granted above); enable RLS + per-tenant policies when a
+-- client-facing (anon/authenticated) path exists.
+alter table public.decks enable row level security;
