@@ -53,7 +53,13 @@ export function createDeckHandlers(deps: DeckApiDeps): {
     const { store, llm } = deps;
 
     return {
-        list: async () => json(await store.list()),
+        list: async () => {
+            try {
+                return json(await store.list());
+            } catch (err) {
+                return mapError(err);
+            }
+        },
 
         create: async (req) => {
             try {
@@ -66,13 +72,21 @@ export function createDeckHandlers(deps: DeckApiDeps): {
         },
 
         get: async (_req, params) => {
-            const rec = await store.get(params?.id ?? "");
-            return rec ? json(rec) : json({ error: "not_found" }, 404);
+            try {
+                const rec = await store.get(params?.id ?? "");
+                return rec ? json(rec) : json({ error: "not_found" }, 404);
+            } catch (err) {
+                return mapError(err);
+            }
         },
 
         getBySlug: async (_req, params) => {
-            const rec = await store.getBySlug(params?.slug ?? "");
-            return rec ? json(rec) : json({ error: "not_found" }, 404);
+            try {
+                const rec = await store.getBySlug(params?.slug ?? "");
+                return rec ? json(rec) : json({ error: "not_found" }, 404);
+            } catch (err) {
+                return mapError(err);
+            }
         },
 
         update: async (req, params) => {

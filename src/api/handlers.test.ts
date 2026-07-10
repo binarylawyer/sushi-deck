@@ -87,4 +87,31 @@ describe("deck API handlers", () => {
         const noLlm = createDeckHandlers({ store });
         expect((await noLlm.generate(req({ brief: "x" }))).status).toBe(501);
     });
+
+    it("read handlers map a store error to a 500 JSON body (not an opaque throw)", async () => {
+        // Regression: list/get/getBySlug used to lack a try/catch, so a Supabase
+        // failure propagated as an opaque empty 500 — the real cause only showed
+        // in server logs. They must return the mapped JSON error instead.
+        const boom = new Error("decks.list failed: permission denied for table decks [42501]");
+        const failing = {
+            list: async () => { throw boom; },
+            get: async () => { throw boom; },
+            getBySlug: async () => { throw boom; },
+            create: async () => { throw boom; },
+            update: async () => { throw boom; },
+            remove: async () => { throw boom; },
+        };
+        const failApi = createDeckHandlers({ store: failing as never });
+        for (const call of [
+            () => failApi.list(req()),
+            () => failApi.get(req(), { id: "x" }),
+            () => failApi.getBySlug(req(), { slug: "x" }),
+        ]) {
+            const res = await call();
+            expect(res.status).toBe(500);
+            const body = await res.json();
+            expect(body.error).toBe("internal");
+            expect(body.message).toContain("permission denied");
+        }
+    });
 });

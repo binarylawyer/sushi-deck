@@ -1,6 +1,6 @@
 {
   "name": "@binarylawyer/sushi-deck",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Sushi Deck — a portable, API-driven presentation/slide-deck builder. Typed React slides on a scaled artboard (present/overview/presenter/scroll/PDF), a data-driven JSON format, and a testable storage + generation layer. Auth-agnostic and themeable.",
   "license": "UNLICENSED",
   "private": false,
