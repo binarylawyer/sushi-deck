@@ -21,6 +21,16 @@ import {
  * Expected table (see supabase/migrations): decks(id uuid, slug text unique,
  * title text, deck jsonb, theme jsonb, owner text, version int, created_at,
  * updated_at).
+ *
+ * ## Owner isolation (multi-tenant)
+ *
+ * When constructed with a non-null `owner`, every read and write is scoped to
+ * that owner: `list`/`get`/`getBySlug` only return the owner's rows, and
+ * `update`/`remove` only touch the owner's rows. This is defense-in-depth in
+ * the app layer *in addition to* Postgres RLS — a store scoped to owner "A"
+ * can never observe or mutate owner "B"'s decks even if they share a service
+ * key. When `owner` is null (the default, e.g. the shared contract tests) no
+ * owner filter is applied and the store behaves as a single global tenant.
  */
 interface DeckRow {
     id: string;
@@ -33,6 +43,27 @@ interface DeckRow {
 }
 
 const PG_UNIQUE_VIOLATION = "23505";
+
+/**
+ * Supabase's Postgrest errors are plain objects (`{ message, details, hint,
+ * code }`), NOT `Error` instances — so callers that do `e instanceof Error`
+ * (both apps' gallery catch blocks) silently drop the real cause and show a
+ * generic fallback. Wrap them in a real `Error` that carries the message +
+ * code so the actual failure ("JWT expired", "permission denied", …) surfaces
+ * all the way to the UI. Domain errors (already `Error`s) pass through.
+ */
+function dbError(op: string, error: unknown): Error {
+    if (error instanceof Error) return error;
+    const e = error as { message?: string; code?: string; hint?: string; details?: string } | null;
+    const parts = [e?.message || "unknown Supabase error"];
+    if (e?.code) parts.push(`[${e.code}]`);
+    if (e?.details) parts.push(`— ${e.details}`);
+    if (e?.hint) parts.push(`(hint: ${e.hint})`);
+    const wrapped = new Error(`decks.${op} failed: ${parts.join(" ")}`);
+    (wrapped as Error & { code?: string; cause?: unknown }).code = e?.code;
+    (wrapped as Error & { cause?: unknown }).cause = error;
+    return wrapped;
+}
 
 function toStored(row: DeckRow): StoredDeck {
     return {
@@ -58,6 +89,17 @@ export class SupabaseDeckStore implements DeckStore {
         if (!ok) throw new DeckValidationError(errors);
     }
 
+    /**
+     * Apply the tenant filter when this store is owner-scoped; otherwise a
+     * no-op. Typed loosely (via a cast) rather than with an `eq`-returning
+     * constraint so it doesn't trip TS's deep-instantiation guard on the
+     * heavily-generic Postgrest builder types.
+     */
+    private scoped<T>(query: T): T {
+        if (this.owner == null) return query;
+        return (query as unknown as { eq(column: string, value: unknown): T }).eq("owner", this.owner);
+    }
+
     async create(input: CreateDeckInput): Promise<StoredDeck> {
         this.assertValid(input.deck);
         const slug = input.slug ?? slugify(input.deck.title);
@@ -67,30 +109,32 @@ export class SupabaseDeckStore implements DeckStore {
             .select("*")
             .single();
         if (error) {
-            if (error.code === PG_UNIQUE_VIOLATION) throw new DeckConflictError(`Slug already in use: ${slug}`);
-            throw error;
+            if ((error as { code?: string }).code === PG_UNIQUE_VIOLATION)
+                throw new DeckConflictError(`Slug already in use: ${slug}`);
+            throw dbError("create", error);
         }
         return toStored(data as DeckRow);
     }
 
     async get(id: string): Promise<StoredDeck | null> {
-        const { data, error } = await this.db.from(this.table).select("*").eq("id", id).maybeSingle();
-        if (error) throw error;
+        const { data, error } = await this.scoped(this.db.from(this.table).select("*").eq("id", id)).maybeSingle();
+        if (error) throw dbError("get", error);
         return data ? toStored(data as DeckRow) : null;
     }
 
     async getBySlug(slug: string): Promise<StoredDeck | null> {
-        const { data, error } = await this.db.from(this.table).select("*").eq("slug", slug).maybeSingle();
-        if (error) throw error;
+        const { data, error } = await this.scoped(
+            this.db.from(this.table).select("*").eq("slug", slug),
+        ).maybeSingle();
+        if (error) throw dbError("getBySlug", error);
         return data ? toStored(data as DeckRow) : null;
     }
 
     async list(): Promise<DeckListItem[]> {
-        const { data, error } = await this.db
-            .from(this.table)
-            .select("id, slug, title, updated_at, version")
-            .order("updated_at", { ascending: false });
-        if (error) throw error;
+        const { data, error } = await this.scoped(
+            this.db.from(this.table).select("id, slug, title, updated_at, version"),
+        ).order("updated_at", { ascending: false });
+        if (error) throw dbError("list", error);
         return (data ?? []).map((r) => ({
             id: r.id as string,
             slug: r.slug as string,
@@ -110,30 +154,33 @@ export class SupabaseDeckStore implements DeckStore {
         const nextDeck = input.deck ?? existing.deck;
         const slug = input.slug ?? existing.slug;
 
-        const { data, error } = await this.db
-            .from(this.table)
-            .update({
-                slug,
-                title: nextDeck.title,
-                deck: nextDeck,
-                version: existing.version + 1,
-                updated_at: new Date().toISOString(),
-            })
-            .eq("id", id)
-            .eq("version", existing.version) // optimistic lock
+        const { data, error } = await this.scoped(
+            this.db
+                .from(this.table)
+                .update({
+                    slug,
+                    title: nextDeck.title,
+                    deck: nextDeck,
+                    version: existing.version + 1,
+                    updated_at: new Date().toISOString(),
+                })
+                .eq("id", id)
+                .eq("version", existing.version), // optimistic lock
+        )
             .select("*")
             .maybeSingle();
         if (error) {
-            if (error.code === PG_UNIQUE_VIOLATION) throw new DeckConflictError(`Slug already in use: ${slug}`);
-            throw error;
+            if ((error as { code?: string }).code === PG_UNIQUE_VIOLATION)
+                throw new DeckConflictError(`Slug already in use: ${slug}`);
+            throw dbError("update", error);
         }
         if (!data) throw new DeckConflictError("Concurrent update — version moved");
         return toStored(data as DeckRow);
     }
 
     async remove(id: string): Promise<void> {
-        const { data, error } = await this.db.from(this.table).delete().eq("id", id).select("id");
-        if (error) throw error;
+        const { data, error } = await this.scoped(this.db.from(this.table).delete().eq("id", id)).select("id");
+        if (error) throw dbError("remove", error);
         if (!data || data.length === 0) throw new DeckNotFoundError(id);
     }
 }

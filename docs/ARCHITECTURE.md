@@ -52,7 +52,13 @@ create index decks_owner_idx on public.decks (owner, updated_at desc);
 
 `SupabaseDeckStore implements DeckStore` and **runs `deckStoreContract`** against
 a test schema/branch — so it's proven identical to the in-memory store. Row-level
-security scopes rows by `owner`/tenant per the consuming app's auth.
+security scopes rows by `owner`/tenant per the consuming app's auth, and — as of
+v0.7.0 — the store itself enforces owner isolation in the app layer too: a
+`SupabaseDeckStore` constructed with an `owner` filters every read
+(`list`/`get`/`getBySlug`) and write (`update`/`remove`) to that owner, so one
+consumer can never see or mutate another's decks even behind a shared service
+key. Constructed without an `owner` (the default) it behaves as a single global
+tenant, which is what the shared contract exercises.
 
 ## 3. API surface (v1)
 
@@ -138,11 +144,14 @@ generateDeck(brief, { brand, slides }, llm) →
 
 ## 9. Open questions for the next build
 
-1. Does the API live **in each consuming app** (Next routes) or as **one shared
-   service** (a standalone deck-api app / Supabase Edge Functions)? Leaning:
-   start as routes inside moye-law-os, extract to a shared service if a second
-   app needs it.
-2. Multi-tenancy shape: `owner` = app id, or full per-user RLS?
+1. ~~Does the API live **in each consuming app** or as **one shared service**?~~
+   **Decided (2026-07, Option A):** one HTTP API, hosted by the `sushi-deck-app`
+   backend tier; **both** front-ends (`sushi-deck-app`'s own UI and moye-law-os)
+   are pure API consumers. A later extraction to a standalone deck-api service /
+   Supabase Edge Functions is a clean follow-up — the library already exposes the
+   handlers, so nothing in the package changes.
+2. Multi-tenancy shape: **`owner` = app/consumer id** (enforced in the store as
+   of v0.7.0; see §2). Full per-user RLS remains a later option.
 3. Generation model + cost ceiling; do we cache/rate-limit?
 4. Asset/image storage (Supabase Storage) — in scope for v1 or later?
 5. Editor UX scope for v1: field forms vs. inline editing; reorder via DnD.
