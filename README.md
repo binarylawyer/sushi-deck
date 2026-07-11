@@ -203,7 +203,7 @@ your app (it calls these ops and persists the JSON).
 
 | Export | What |
 |---|---|
-| `DeckRuntime` | Present / overview / presenter / fullscreen runtime. Props: `deck`, `homeHref?`, `scrollHref?`, `components?`, `theme?`. |
+| `DeckRuntime` | Present / overview / presenter / fullscreen runtime. Props: `deck`, `homeHref?`, `scrollHref?`, `components?`, `theme?`, `index?` / `onIndexChange?` (observe or control the current slide), `sidebar?` (present-mode chrome, e.g. a flow-map rail — a node or `({index,total}) => node`), `contentAlign?` (`"top"` \| `"center"` vertical alignment of slide body). |
 | `ScrollView` | Scrollable stacked view. Props: `deck`, `presentHref?`, `homeHref?`, `components?`, `theme?`. |
 | `SlidePage`, `Opener`, `Cover`, `Mark` | Slide primitives (frame + header). |
 | `Plate`, `Callout`, `Kicker`, `Stat`, `StatBand`, `TwoCol`, `Quote`, `Bullets`, `DataTable`, `BarChart` | Authoring blocks — the reusable content components. See `examples/styleguide-deck.tsx`. |

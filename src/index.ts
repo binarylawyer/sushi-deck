@@ -9,7 +9,7 @@
  */
 
 export { DeckRuntime } from "./DeckRuntime";
-export type { DeckRuntimeProps } from "./DeckRuntime";
+export type { DeckRuntimeProps, DeckRuntimeSidebarState } from "./DeckRuntime";
 export { ScrollView } from "./ScrollView";
 export type { ScrollViewProps } from "./ScrollView";
 export { ScaledPage } from "./ScaledPage";

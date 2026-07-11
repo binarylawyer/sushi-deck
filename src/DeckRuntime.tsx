@@ -19,19 +19,30 @@ import { ChevronLeft, ChevronRight, Grid, Presentation, Scroll, Maximize } from 
  */
 const PRESENT_CHROME = 132; // px reserved for the bottom control bar + padding
 
-function useContainScale(w: number, h: number, chrome: number) {
+function useContainScale(w: number, h: number, chrome: number, reserveW = 0) {
     const [scale, setScale] = useState(0.6);
     useEffect(() => {
         function fit() {
-            const availW = window.innerWidth - 64;
+            const availW = window.innerWidth - 64 - reserveW;
             const availH = window.innerHeight - chrome;
             setScale(Math.min(availW / w, availH / h));
         }
         fit();
         window.addEventListener("resize", fit);
         return () => window.removeEventListener("resize", fit);
-    }, [w, h, chrome]);
+    }, [w, h, chrome, reserveW]);
     return scale;
+}
+
+/** Fixed width of the present-mode sidebar rail, in px. */
+const SIDEBAR_W = 378;
+
+/** State handed to a `sidebar` render function so it can track position. */
+export interface DeckRuntimeSidebarState {
+    /** Zero-based index of the current slide. */
+    index: number;
+    /** Total slide count. */
+    total: number;
 }
 
 export interface DeckRuntimeProps {
@@ -45,6 +56,31 @@ export interface DeckRuntimeProps {
     /** Brand theme overrides. */
     theme?: DeckTheme;
     className?: string;
+    /**
+     * Optional controlled current-slide index. When provided the runtime is
+     * controlled — pair it with `onIndexChange` and drive it from the parent.
+     * When omitted the runtime owns its index internally (the default).
+     */
+    index?: number;
+    /**
+     * Called with the new slide index whenever the runtime navigates. Fires in
+     * both controlled and uncontrolled modes, so a parent can observe position
+     * (e.g. to drive a `sidebar`) without taking over navigation.
+     */
+    onIndexChange?: (index: number) => void;
+    /**
+     * Presentation chrome rendered to the left of the stage in present mode
+     * (e.g. a flow-map rail). A render function receives `{ index, total }` so
+     * it can highlight the current slide; a plain node is rendered as-is. Not
+     * part of the deck data — it stays portable and never affects the slides.
+     */
+    sidebar?: ReactNode | ((state: DeckRuntimeSidebarState) => ReactNode);
+    /**
+     * Vertical alignment of each slide's body content within the artboard.
+     * `"center"` optically centers content (matching full-frame facade decks);
+     * `"top"` (default) keeps the runtime's original top-aligned flow.
+     */
+    contentAlign?: "top" | "center";
 }
 
 export function DeckRuntime({
@@ -54,22 +90,32 @@ export function DeckRuntime({
     components,
     theme,
     className,
+    index: controlledIndex,
+    onIndexChange,
+    sidebar,
+    contentAlign,
 }: DeckRuntimeProps) {
     const w = deck.width ?? DEFAULT_PAGE_W;
     const h = deck.height ?? DEFAULT_PAGE_H;
     const slides = deck.slides;
-    const [index, setIndex] = useState(0);
+    const isControlled = controlledIndex != null;
+    const [internalIndex, setInternalIndex] = useState(0);
+    const index = isControlled ? Math.max(0, Math.min(slides.length - 1, controlledIndex)) : internalIndex;
     const [overview, setOverview] = useState(false);
     const [presenter, setPresenter] = useState(false);
     const [elapsed, setElapsed] = useState(0);
     const startRef = useRef(Date.now());
 
-    const scale = useContainScale(w, h, PRESENT_CHROME);
+    const scale = useContainScale(w, h, PRESENT_CHROME, sidebar ? SIDEBAR_W : 0);
     const rootStyle = themeVars(theme);
 
     const go = useCallback(
-        (n: number) => setIndex((i) => Math.max(0, Math.min(slides.length - 1, n))),
-        [slides.length],
+        (n: number) => {
+            const clamped = Math.max(0, Math.min(slides.length - 1, n));
+            if (!isControlled) setInternalIndex(clamped);
+            onIndexChange?.(clamped);
+        },
+        [slides.length, isControlled, onIndexChange],
     );
 
     useEffect(() => {
@@ -204,16 +250,28 @@ export function DeckRuntime({
     }
 
     // ---- Present mode ----
+    const sidebarNode =
+        typeof sidebar === "function" ? sidebar({ index, total: slides.length }) : sidebar;
     return (
-        <div className={`dk dk-stage dk-present${className ? ` ${className}` : ""}`} style={rootStyle}>
-            <div className="dk-present__stage">
-                <ScaledPage scale={scale} width={w} height={h}>{current?.render()}</ScaledPage>
+        <div
+            className={`dk dk-stage dk-present${className ? ` ${className}` : ""}`}
+            style={rootStyle}
+            data-content-align={contentAlign}
+            data-has-sidebar={sidebarNode ? "1" : undefined}
+        >
+            {sidebarNode ? (
+                <div className="dk-rail" style={{ width: SIDEBAR_W }}>{sidebarNode}</div>
+            ) : null}
+            <div className="dk-present__col">
+                <div className="dk-present__stage">
+                    <ScaledPage scale={scale} width={w} height={h}>{current?.render()}</ScaledPage>
+                </div>
+                <PresentBar
+                    deck={deck} L={L} homeHref={homeHref} scrollHref={scrollHref}
+                    index={index} count={slides.length} go={go}
+                    overview={() => setOverview(true)} presenter={() => setPresenter(true)}
+                />
             </div>
-            <PresentBar
-                deck={deck} L={L} homeHref={homeHref} scrollHref={scrollHref}
-                index={index} count={slides.length} go={go}
-                overview={() => setOverview(true)} presenter={() => setPresenter(true)}
-            />
         </div>
     );
 }
