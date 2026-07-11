@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/sushi-deck/generate — AI deck generation.
+ * @binarylawyer/sushi-deck-kit/generate — AI deck generation.
  *
  * Turn a brief (+ optional brand) into a validated `DeckJson`. The LLM is
  * injected (an `LlmClient` interface), so this is deterministic and
