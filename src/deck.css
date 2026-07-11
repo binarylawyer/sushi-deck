@@ -72,7 +72,7 @@
 .dk .dk-opener .dk-lede { margin: 0; font-family: var(--dk-display); font-style: italic; font-size: 20px; line-height: 1.4; color: rgba(11, 26, 46, 0.66); max-width: 62ch; }
 
 /* ---- Cover variant (navy field) ---- */
-.dk .dk-page.dk-cover { background: var(--dk-navy-deep); color: var(--dk-paper); padding: 0; }
+.dk .dk-page.dk-cover { background: var(--dk-navy-deep); color: var(--dk-paper); padding: 0; box-shadow: none; }
 .dk .dk-page.dk-cover::before { content: ""; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: var(--dk-gold); }
 .dk .dk-cover-inner { padding: 60px 84px; flex: 1; display: flex; flex-direction: column; }
 .dk .dk-cover-eyebrow { font-family: var(--dk-mono); font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dk-gold-soft); font-weight: 700; }
@@ -98,7 +98,15 @@
 
 /* ---- Present mode ---- */
 .dk-present { display: flex; min-height: 100vh; width: 100%; flex-direction: column; }
+.dk-present__col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .dk-present__stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+/* Optional left rail (presentation chrome passed via the `sidebar` prop). */
+.dk-present[data-has-sidebar] { flex-direction: row; align-items: stretch; }
+.dk-rail { flex-shrink: 0; height: 100vh; overflow: hidden; }
+
+/* Optional vertical centering of slide body content (contentAlign="center"). */
+.dk[data-content-align="center"] .dk-body { display: flex; flex-direction: column; justify-content: center; }
 
 /* ---- Overview grid ---- */
 .dk-overview { min-height: 100vh; width: 100%; overflow: auto; padding: 40px; }
