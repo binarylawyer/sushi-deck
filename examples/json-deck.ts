@@ -1,11 +1,11 @@
-import type { DeckJson } from "@binarylawyer/sushi-deck-kit/json";
+import type { DeckJson } from "@binarylawyer/sushi-deck/json";
 
 /**
  * A deck as pure DATA — no React, no code. This is what an admin editor would
  * read and write. Render it with:
  *
- *   import { deckFromJson } from "@binarylawyer/sushi-deck-kit/json";
- *   import { DeckRuntime } from "@binarylawyer/sushi-deck-kit";
+ *   import { deckFromJson } from "@binarylawyer/sushi-deck/json";
+ *   import { DeckRuntime } from "@binarylawyer/sushi-deck";
  *   const deck = deckFromJson(q3Json);
  *   <DeckRuntime deck={deck} theme={q3Json.theme} />
  *

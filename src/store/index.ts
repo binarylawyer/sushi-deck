@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/sushi-deck-kit/store — the deck storage layer.
+ * @binarylawyer/sushi-deck/store — the deck storage layer.
  *
  * A `DeckStore` interface plus the in-memory reference implementation. The API
  * routes and every consuming project depend on the interface; production wires

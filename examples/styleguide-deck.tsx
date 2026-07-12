@@ -1,4 +1,4 @@
-import type { Deck } from "@binarylawyer/sushi-deck-kit";
+import type { Deck } from "@binarylawyer/sushi-deck";
 import {
     SlidePage,
     Opener,
@@ -13,7 +13,7 @@ import {
     Bullets,
     DataTable,
     BarChart,
-} from "@binarylawyer/sushi-deck-kit";
+} from "@binarylawyer/sushi-deck";
 
 /**
  * Styleguide deck — one slide per authoring block, so you can see the kit's
@@ -23,7 +23,7 @@ import {
 function Title() {
     return (
         <Cover
-            eyebrow="@binarylawyer/sushi-deck-kit · Styleguide"
+            eyebrow="@binarylawyer/sushi-deck · Styleguide"
             title={<>The <em>blocks</em>.</>}
             sub="Every reusable content component, one per slide. Copy from these to build any deck."
             meta={[{ dt: "Version", dd: "0.2.0" }, { dt: "Artboard", dd: "1100 × 850" }]}
