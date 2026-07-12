@@ -1,11 +1,11 @@
 /**
- * @binarylawyer/sushi-deck-kit — public API.
+ * @binarylawyer/sushi-deck — public API.
  *
  * Import the runtime + primitives, and the stylesheet once:
- *   import { DeckRuntime, SlidePage, Opener, Cover } from "@binarylawyer/sushi-deck-kit";
- *   import "@binarylawyer/sushi-deck-kit/styles.css";
+ *   import { DeckRuntime, SlidePage, Opener, Cover } from "@binarylawyer/sushi-deck";
+ *   import "@binarylawyer/sushi-deck/styles.css";
  *
- * The optional password gate lives at "@binarylawyer/sushi-deck-kit/gate".
+ * The optional password gate lives at "@binarylawyer/sushi-deck/gate".
  */
 
 export { DeckRuntime } from "./DeckRuntime";

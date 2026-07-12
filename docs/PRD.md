@@ -1,7 +1,7 @@
 # Sushi Deck — Product Requirements (PRD)
 
 > Status: draft v0.1 · Owner: Binary Lawyer · Last updated: 2026-07
-> Package: `@binarylawyer/sushi-deck-kit` · Repo: `binarylawyer/sushi-deck`
+> Package: `@binarylawyer/sushi-deck` · Repo: `binarylawyer/sushi-deck`
 
 ## 1. One line
 
@@ -107,7 +107,7 @@ across our apps + AI generation that outputs *our* format.
 
 ## 9. Success metrics
 
-- N apps consuming `@binarylawyer/sushi-deck-kit` (target ≥ 2 within the first two
+- N apps consuming `@binarylawyer/sushi-deck` (target ≥ 2 within the first two
   builds: moye-law-os + one more).
 - A non-developer creates + edits a deck end-to-end without code.
 - A branded deck generated from a brief in < 1 minute, then refined.

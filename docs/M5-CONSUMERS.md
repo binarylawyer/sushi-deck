@@ -2,7 +2,7 @@
 
 > Companion to `PRD.md` / `ARCHITECTURE.md`. This is the plan for the next
 > conversation. State at handoff: M0–M4 built; PRs #3 (API) + #4 (editor)
-> merged; #5 (export fix) open. Package `@binarylawyer/sushi-deck-kit` @ 0.6.1.
+> merged; #5 (export fix) open. Package `@binarylawyer/sushi-deck` @ 0.6.1.
 
 ## The shape
 

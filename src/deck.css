@@ -1,5 +1,5 @@
 /* ============================================================
-   @binarylawyer/sushi-deck-kit — slide runtime + artboard styles
+   @binarylawyer/sushi-deck — slide runtime + artboard styles
    ------------------------------------------------------------
    Everything is scoped under `.dk` and driven by `--dk-*` tokens
    with sensible defaults, so a deck renders identically wherever

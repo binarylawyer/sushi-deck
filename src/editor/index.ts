@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/sushi-deck-kit/editor — a portable, non-dev deck editor.
+ * @binarylawyer/sushi-deck/editor — a portable, non-dev deck editor.
  *
  * `<DeckEditor initialDeck onChange onSave theme />` renders a three-pane UI
  * (slides · live preview · inspector) over the tested `editorReducer`. Drop it

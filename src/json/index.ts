@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/sushi-deck-kit/json — the data-driven deck format.
+ * @binarylawyer/sushi-deck/json — the data-driven deck format.
  *
  * A `DeckJson` is a serializable deck (blocks as data, not code). Convert it to
  * a runtime `Deck` with `deckFromJson()` and edit it with the pure `ops` — the

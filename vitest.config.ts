@@ -8,10 +8,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
     resolve: {
         alias: {
-            "@binarylawyer/sushi-deck-kit/json": new URL("./src/json/index.ts", import.meta.url).pathname,
-            "@binarylawyer/sushi-deck-kit/store": new URL("./src/store/index.ts", import.meta.url).pathname,
-            "@binarylawyer/sushi-deck-kit/gate": new URL("./src/gate/index.ts", import.meta.url).pathname,
-            "@binarylawyer/sushi-deck-kit": new URL("./src/index.ts", import.meta.url).pathname,
+            "@binarylawyer/sushi-deck/json": new URL("./src/json/index.ts", import.meta.url).pathname,
+            "@binarylawyer/sushi-deck/store": new URL("./src/store/index.ts", import.meta.url).pathname,
+            "@binarylawyer/sushi-deck/gate": new URL("./src/gate/index.ts", import.meta.url).pathname,
+            "@binarylawyer/sushi-deck": new URL("./src/index.ts", import.meta.url).pathname,
         },
     },
     test: {
