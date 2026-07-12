@@ -6,7 +6,7 @@
 ## 1. The pieces
 
 ```
-┌─────────────────────────── @binarylawyer/sushi-deck (package) ───────────────────────────┐
+┌─────────────────────────── @binarylawyer/sushi-deck-kit (package) ───────────────────────────┐
 │  runtime        DeckRuntime · ScrollView · ScaledPage        (present/scroll/PDF)          │
 │  authoring      SlidePage · Opener · Cover · 10 blocks · theme tokens                      │
 │  /json          DeckJson schema · deckFromJson() · edit ops · validateDeckJson()           │
@@ -84,7 +84,7 @@ The package owns no auth. Each deployment gates the API + pages its own way:
 
 - **moye-law-os**: reuses its magic-link / firm-role model; the deck API sits
   behind the same session, `owner` = firm/tenant.
-- **Other apps / marketing**: the optional `@binarylawyer/sushi-deck/gate`
+- **Other apps / marketing**: the optional `@binarylawyer/sushi-deck-kit/gate`
   shared-password gate, or public.
 - The API layer reads the caller's identity from the host app's session and sets
   `owner` — the store never trusts a client-supplied tenant.

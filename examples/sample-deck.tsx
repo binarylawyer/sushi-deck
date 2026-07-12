@@ -1,5 +1,5 @@
-import type { Deck } from "@binarylawyer/sushi-deck";
-import { Cover, Opener, SlidePage, Mark } from "@binarylawyer/sushi-deck";
+import type { Deck } from "@binarylawyer/sushi-deck-kit";
+import { Cover, Opener, SlidePage, Mark } from "@binarylawyer/sushi-deck-kit";
 
 /**
  * A tiny 3-slide sample deck showing the authoring model. Slides are plain
@@ -52,7 +52,7 @@ function Ask() {
 export const sampleDeck: Deck = {
     slug: "q3-update",
     title: "Q3 Investor Update",
-    summary: "A short sample deck built with @binarylawyer/sushi-deck.",
+    summary: "A short sample deck built with @binarylawyer/sushi-deck-kit.",
     slides: [
         { id: "title", label: "Title", render: () => <Title />, notes: "Open warm. Frame the three things: growth, pipeline, the ask." },
         { id: "growth", label: "Growth", render: () => <Growth />, notes: "38% QoQ, NRR 120%. Tie growth to the two launches." },
