@@ -1,5 +1,5 @@
 /**
- * @binarylawyer/sushi-deck/api — framework-agnostic deck API handlers.
+ * @binarylawyer/sushi-deck-kit/api — framework-agnostic deck API handlers.
  *
  * `createDeckHandlers({ store, llm })` returns Fetch `(Request) => Response`
  * handlers for CRUD + generate. Mount them in your app's routes; the behavior
